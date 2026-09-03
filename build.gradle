@@ -1,0 +1,123 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'vn.rikkei.exam'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot: REST API, validation, database, health/metrics.
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // Keep all Spring AI modules on one compatible version.
+    implementation platform('org.springframework.ai:spring-ai-bom:2.0.1')
+
+    // ChatClient, ChatModel, embeddings, ChatMemory and @Tool support.
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+    implementation 'org.springframework.ai:spring-ai-starter-model-ollama'
+
+    // RAG with PostgreSQL/Supabase pgvector and retrieval advisors.
+    implementation 'org.springframework.ai:spring-ai-starter-vector-store-pgvector'
+    implementation 'org.springframework.ai:spring-ai-vector-store-advisor'
+    implementation 'org.springframework.ai:spring-ai-tika-document-reader'
+
+    // MCP Antigravity client over STDIO/SSE/Streamable HTTP.
+    implementation 'org.springframework.ai:spring-ai-starter-mcp-client'
+
+    // Langfuse trace export through OTLP/OpenTelemetry, independent of deployment type.
+    implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // ========================================================
+    // 1. WEB & CORE
+    // ========================================================
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // ========================================================
+    // 2. OBSERVABILITY — Actuator + OpenTelemetry (LLMOps)
+    // OTLP exporter → Langfuse dashboard
+    // ========================================================
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-opentelemetry'
+
+    // ========================================================
+    // 3. SPRING AI — LLM Models
+    //    Cả 2 starters được khai báo; profile active sẽ
+    //    quyết định bean nào được auto-configure.
+    // ========================================================
+
+    // OpenAI (profile: cloud) — chat gpt-4o-mini + embedding
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+
+    // Ollama (profile: local) — chat llama3.2 + nomic-embed-text
+    implementation 'org.springframework.ai:spring-ai-starter-model-ollama'
+
+    // ========================================================
+    // 4. SPRING AI — Vector Store + RAG (Module 1)
+    // ========================================================
+    // PgVector store auto-configured (PostgreSQL + pgvector ext)
+    implementation 'org.springframework.ai:spring-ai-starter-vector-store-pgvector'
+
+    // PDF document reader (ingestion pipeline — includes Tika for multi-format support)
+    implementation 'org.springframework.ai:spring-ai-pdf-document-reader'
+    implementation 'org.springframework.ai:spring-ai-tika-document-reader'
+    implementation 'org.springframework.ai:spring-ai-vector-store-advisor'
+    //       in Spring AI 2.x — no separate artifact needed.
+
+    // ========================================================
+    // 5. SPRING AI — MCP Server & Client (Module 3)
+    //    MCP Server: expose tools qua HTTP/SSE (WebMVC transport)
+    //    → Không có Stdio Pollution vì dùng HTTP thay cho stdout.
+    //    MCP Client: ChatClient auto-discovers server tools.
+    // ========================================================
+    implementation 'org.springframework.ai:spring-ai-starter-mcp-server-webmvc'
+    implementation 'org.springframework.ai:spring-ai-starter-mcp-client'
+
+    // ========================================================
+    // 6. DATABASE — PostgreSQL JDBC driver
+    // ========================================================
+    runtimeOnly 'org.postgresql:postgresql'
+
+    // ========================================================
+    // 7. UTILITIES
+    // ========================================================
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Swagger UI / OpenAPI 3 — Spring Boot 4.x compatible
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.0'
+
+    // ========================================================
+    // 8. TEST
+    // ========================================================
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
