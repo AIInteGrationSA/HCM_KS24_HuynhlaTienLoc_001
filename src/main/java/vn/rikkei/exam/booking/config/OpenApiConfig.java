@@ -12,7 +12,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("SmartHub Logistics API")
+                        .title("Booking Assistant API")
                         .version("1.0.0")
                         .description("AI-Powered Smart Logistics Operations Center API Documentation"));
     }

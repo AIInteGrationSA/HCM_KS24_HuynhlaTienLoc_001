@@ -6,7 +6,8 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import vn.rikkei.exam.booking.dto.ChatRequest;
 import vn.rikkei.exam.booking.dto.ChatResponse;
-import vn.rikkei.exam.booking.tool.AgentTool;
+import vn.rikkei.exam.booking.tool.BookingTools;
+//import vn.rikkei.exam.booking.tool.LogisticsToolService;
 
 @Slf4j
 @Service
@@ -14,7 +15,7 @@ import vn.rikkei.exam.booking.tool.AgentTool;
 public class OperationsAgentService {
 
     private final ChatClient chatClient;
-//    private final AgentTool ;
+    private final BookingTools logisticsToolService;
 
     /**
      * System Prompt cho Logistics Agent — thiết kế để:
